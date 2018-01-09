@@ -1,4 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    }
+}
+
 
 android {
     compileSdkVersion 26
@@ -10,6 +22,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
     buildTypes {
         release {
@@ -23,9 +40,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs'  // https://stackoverflow.com/a/40970308
     })
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.google.android.gms:play-services-ads:11.8.0'
-    compile project(':jokes')
     compile project(':jokesactivity')
+    endpointsServer project(path: ':backend', configuration: 'endpoints')
+    compile 'com.google.api-client:google-api-client:+'
+    compile 'com.google.http-client:google-http-client-android:1.23.0'
 }
