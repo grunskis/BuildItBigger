@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">jokesactivity</string>
+    <string name="error_no_joke">Error: didn\'t get the joke from the server...</string>
 </resources>

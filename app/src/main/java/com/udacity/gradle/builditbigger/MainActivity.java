@@ -1,32 +1,29 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.grunskis.jokesactivity.JokeActivity;
-import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
-
-import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BackendClient.Callback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
+        findViewById(R.id.b_tell_joke).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tellJoke(view);
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,42 +48,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        final Context context = this;
+        new BackendClient().execute(this);
+    }
 
-        new AsyncTask<Void, Void, String>() {
-            private MyApi api = null;
-
-            @Override
-            protected String doInBackground(Void... voids) {
-                if (api == null) {
-                    MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(), null)
-                            // options for running against local devappserver
-                            // - 10.0.2.2 is localhost's IP address in Android emulator
-                            // - turn off compression when running against local devappserver
-                            .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                            .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                                @Override
-                                public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                                    abstractGoogleClientRequest.setDisableGZipContent(true);
-                                }
-                            });
-
-                    api = builder.build();
-                }
-                try {
-                    return api.getJoke().execute().getJoke();
-                } catch (IOException e) {
-                    return e.getMessage();
-                }
-            }
-
-            @Override
-            protected void onPostExecute(String joke) {
-                Intent intent = new Intent(context, JokeActivity.class);
-                intent.putExtra(JokeActivity.EXTRA_JOKE, joke);
-                startActivity(intent);
-            }
-        }.execute();
+    @Override
+    public void onDone(String result) {
+        Intent intent = new Intent(this, JokeActivity.class);
+        if (result != null) {
+            intent.putExtra(JokeActivity.EXTRA_JOKE, result);
+        }
+        startActivity(intent);
     }
 }

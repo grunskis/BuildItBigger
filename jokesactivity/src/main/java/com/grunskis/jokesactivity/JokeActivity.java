@@ -1,8 +1,8 @@
 package com.grunskis.jokesactivity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 public class JokeActivity extends AppCompatActivity {
@@ -14,11 +14,14 @@ public class JokeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke);
 
+        TextView jokeTextView = findViewById(R.id.tv_joke);
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_JOKE)) {
             String joke = intent.getStringExtra(EXTRA_JOKE);
-            TextView jokeTextView = findViewById(R.id.tv_joke);
             jokeTextView.setText(joke);
+        } else {
+            jokeTextView.setText(R.string.error_no_joke);
         }
     }
 }
