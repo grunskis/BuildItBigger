@@ -6,20 +6,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.grunskis.jokesactivity.JokeActivity;
 
 
 public class MainActivity extends AppCompatActivity implements BackendClient.Callback {
 
+    private Button mButton;
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mButton = findViewById(R.id.b_tell_joke);
+        mProgressBar = findViewById(R.id.pb_loading);
+
         findViewById(R.id.b_tell_joke).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mButton.setEnabled(false);
+                mProgressBar.setVisibility(View.VISIBLE);
+
                 tellJoke(view);
             }
         });
@@ -58,5 +69,9 @@ public class MainActivity extends AppCompatActivity implements BackendClient.Cal
             intent.putExtra(JokeActivity.EXTRA_JOKE, result);
         }
         startActivity(intent);
+
+        mButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
+
     }
 }

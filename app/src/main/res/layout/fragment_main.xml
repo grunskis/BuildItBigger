@@ -22,6 +22,13 @@
         android:text="@string/button_text"
         android:id="@+id/b_tell_joke" />
 
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:visibility="invisible"
+        android:layout_below="@id/b_tell_joke" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
