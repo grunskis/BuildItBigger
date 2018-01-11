@@ -17,9 +17,12 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
@@ -47,8 +50,14 @@ public class MainActivityTest {
     public void tellJoke_getJoke_launchJokeActivity() {
         mBackendClient.execute(mActivityRule.getActivity());
 
-        intended(allOf(hasComponent(JokeActivity.class.getName()),
-                hasExtraWithKey(JokeActivity.EXTRA_JOKE)));
+        intended(allOf(
+                hasComponent(JokeActivity.class.getName()),
+                hasExtraWithKey(JokeActivity.EXTRA_JOKE),
+                hasExtra(equalTo(JokeActivity.EXTRA_JOKE), allOf(
+                        not(equalTo("")),
+                        not(equalTo(null))))
+
+        ));
     }
 
     @After
